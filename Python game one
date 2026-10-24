@@ -1,0 +1,48 @@
+import pygame
+pygame.init()
+screen = pygame.display.set_mode((600,600))
+pygame.display.set_caption("")
+run = True
+paddle_x = 240
+paddle_y = 20
+ball_x = 300
+ball_y = 300
+speed_x = 0.5
+speed_y = -0.5
+while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RIGHT] and paddle_x < 480:
+        paddle_x += 2
+    if keys[pygame.K_LEFT] and paddle_x > 0:
+        paddle_x -= 2
+
+    ball_x += speed_x
+    ball_y += speed_y
+
+    if ball_x <= 10 or ball_x >= 590:
+        speed_x *= -1
+
+    if ball_y >= 590:
+        speed_y *= -1
+
+    paddle_rect = pygame.Rect(paddle_x, paddle_y, 120, 15)
+    ball_rect = pygame.Rect(ball_x - 10, ball_y - 10, 20, 20)
+
+    if paddle_rect.colliderect(ball_rect) and speed_y < 0:
+        speed_y *= -1
+        ball_y = paddle_y + 30
+
+    if ball_y < 0:
+        ball_x = 300
+        ball_y = 300
+        speed_y = 0.5
+
+    screen.fill((0, 0, 0))
+    pygame.draw.rect(screen, (255, 255, 255), paddle_rect)
+    pygame.draw.circle(screen, (255, 255, 255), (int(ball_x), int(ball_y)), 10)
+    pygame.display.flip()
+pygame.quit()
